@@ -1,10 +1,10 @@
 import socket              
   
-port = 80 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('localhost', port))  
-  
-# receive data from the server  
-print (s.recv(1024) ) 
-# close the connection  
-s.close()      
+port = 7070
+server = socket.gethostbyname(socket.gethostname())
+ct = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ct.connect((server,port))
+
+print (ct.recv(1024) ) 
+
+ct.close()      
