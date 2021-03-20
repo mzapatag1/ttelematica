@@ -6,6 +6,7 @@ import os
 import sys
 import shutil
 import time
+from queue import Queue
 
 
 def pack(packet_id, message):
@@ -26,7 +27,8 @@ def send(socket, output_data):
         socket.send(bytes(output_data, "utf-8"))
 
 def queueCreate(queue, port):
-    queue[port] = []
+    q = Queue(maxsize = 0)
+    queue[port] = q
     print("se creo la cola "+str(port))
     return "QC"
 
@@ -42,7 +44,7 @@ def queueDelete(queue, port):
     return "QE"
 
 def queueMessage(queue, port, message):
-    queue[port].append(message)
+    queue[port].put(message)
     print("se añadió el mensaje a la cola "+str(port))
     print("mensaje",message)
     return "MA"

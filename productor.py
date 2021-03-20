@@ -21,7 +21,7 @@ def Main():
 
     s.connect((host,port))  # connect to server on local computer 
 
-    
+    s.send(bytes("1", "utf-8"))
     while True: 
         # command to send to server 
         message = str(input()).strip()
