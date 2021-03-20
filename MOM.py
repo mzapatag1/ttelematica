@@ -25,7 +25,7 @@ def threaded(c, Queues, port):
             #print_lock.release() # lock released on exit 
             break
         else:
-            Id, command = packet.unpack(str(data.decode("utf-8")))
+            Id, command, message = packet.unpack(str(data.decode("utf-8")))
             if Id == 'q':
 
                 if command == "create":
@@ -37,7 +37,10 @@ def threaded(c, Queues, port):
                 elif command == "delete":
                     response = packet.queueDelete(Queues, port)
                 
-                #c.sendall(response.encode("utf-8"))
+                elif command == "message":
+                    response = packet.queueMessage(Queues, port, message)
+                
+                c.sendall(response.encode("utf-8"))
                 
             if Id == 'c':
 

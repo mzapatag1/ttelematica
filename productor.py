@@ -10,6 +10,7 @@ import time
 #       q create
 #       q list
 #       q delete
+#       q message
 
 def Main(): 
     host = 'localhost' # local host IP '127.0.0.1'
@@ -36,13 +37,35 @@ def Main():
                 if command == 'create':
                     s.send(bytes(Id+" "+command, "utf-8"))
 
+                    response = s.recv(1024)
+                    response = str(response.decode("utf-8"))
+                    print(response)
+
                 #list buckets
                 elif command == 'list':
                     s.send(bytes(Id+" "+command, "utf-8"))
 
+                    response = s.recv(1024)
+                    response = str(response.decode("utf-8"))
+                    print(response)
+
                 #delete a bucket
                 elif command == 'delete':
                     s.send(bytes(Id+" "+command, "utf-8"))
+
+                    response = s.recv(1024)
+                    response = str(response.decode("utf-8"))
+                    print(response)
+                
+                elif command == 'message':
+                    message = input("Ingresa el mensaje: ")
+                    s.send(bytes(Id+" "+command+" "+message, "utf-8"))
+
+                    response = s.recv(1024)
+                    response = str(response.decode("utf-8"))
+                    print(response)
+                else:
+                    print("comando incorrecto")
 
             #commands about files
             elif Id == 'f':

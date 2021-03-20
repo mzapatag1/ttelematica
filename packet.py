@@ -14,7 +14,10 @@ def pack(packet_id, message):
 #method to separate the message
 def unpack(data):
     info = data.split(' ')
-    return info[0], info[1]
+    if len(info)==2:    
+        return info[0], info[1], 0
+    index = data.index("message")
+    return info[0], info[1], data[index+8:]
 
 def send(socket, output_data):
     try:
@@ -25,14 +28,21 @@ def send(socket, output_data):
 def queueCreate(queue, port):
     queue[port] = []
     print("se creo la cola "+str(port))
-    return 0
+    return "QC"
 
 def queueList(queue):
+    listQ = ""
     for i in queue:
-        print(i)
-    return 0
+        listQ += " -"+i+"\n"
+    return listQ
 
 def queueDelete(queue, port):
-    queue[port] = []
+    queue.pop(port)
     print("se eliminó la cola "+str(port))
-    return 0
+    return "QE"
+
+def queueMessage(queue, port, message):
+    queue[port].append(message)
+    print("se añadió el mensaje a la cola "+str(port))
+    print("mensaje",message)
+    return "MA"
