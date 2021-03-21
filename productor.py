@@ -33,7 +33,7 @@ def Main():
             command = commands[1].strip()
             #command about buckets
             if Id == 'q':
-                #create a bucket
+                #create
                 if command == 'create':
                     s.send(bytes(Id+" "+command, "utf-8"))
 
@@ -41,7 +41,7 @@ def Main():
                     response = str(response.decode("utf-8"))
                     print(response)
 
-                #list buckets
+                #list
                 elif command == 'list':
                     s.send(bytes(Id+" "+command, "utf-8"))
 
@@ -49,7 +49,7 @@ def Main():
                     response = str(response.decode("utf-8"))
                     print(response)
 
-                #delete a bucket
+                #delete
                 elif command == 'delete':
                     s.send(bytes(Id+" "+command, "utf-8"))
 

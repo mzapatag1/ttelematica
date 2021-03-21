@@ -26,25 +26,52 @@ def send(socket, output_data):
     except TypeError:
         socket.send(bytes(output_data, "utf-8"))
 
-def queueCreate(queue, port):
+def queueCreate(QueuesP, port):
     q = Queue(maxsize = 0)
-    queue[port] = q
+    QueuesP[port] = q
     print("se creo la cola "+str(port))
     return "QC"
 
-def queueList(queue):
+def queueList(QueuesP):
     listQ = ""
-    for i in queue:
+    for i in QueuesP:
         listQ += " -"+i+"\n"
     return listQ
 
-def queueDelete(queue, port):
-    queue.pop(port)
+def queueDelete(QueuesP, port):
+    QueuesP.pop(port)
     print("se eliminó la cola "+str(port))
     return "QE"
 
-def queueMessage(queue, port, message):
-    queue[port].put(message)
+def queueMessage(QueuesP, port, message):
+    QueuesP[port].put(message)
     print("se añadió el mensaje a la cola "+str(port))
+    print("mensaje",message)
+    return "MA"
+
+#Channels
+
+def channelCreate(ChannelsP, port):
+    ChannelsP[port] = []
+    print("se creo el canal "+str(port))
+    return "CC"
+
+def channelList(ChannelsP):
+    listC = ""
+    for i in ChannelsP:
+        listC += " -"+i+"\n"
+    return listC
+
+def channelDelete(ChannelsP, port):
+    ChannelsP.pop(port)
+    print("se eliminó el canal "+str(port))
+    return "CE"
+
+def channelMessage(ChannelsP, ChannelsC, port, message):
+    
+    for i in ChannelsP[port]:
+        ChannelsC[i].put(message)
+
+    print("se añadió el mensaje a el canal "+str(port))
     print("mensaje",message)
     return "MA"

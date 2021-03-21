@@ -20,7 +20,6 @@ def unpack(data):
 def get_token():
     return 'a'
 
-
 def c_queue(dic_p, dic_c, idq, token):
     q = dic_p.get(idq)
     dic_c[token] = q
@@ -29,3 +28,4 @@ def c_queue(dic_p, dic_c, idq, token):
 def p_queue(dic_c, token):
     q = dic_c[token]
     return q.get()
+

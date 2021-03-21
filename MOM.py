@@ -11,16 +11,16 @@ import os
 
 print_lock = threading.Lock() # thread function 
 
-def threaded(c, Queues, QueuesC, port):
+def threaded(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC):
     data = c.recv(1024)
     Id = str(data.decode("utf-8"))
     if Id == "1":
-        producer(c, Queues, port)
+        producer(c, port, QueuesP, ChannelsP, ChannelsC)
     if Id == "2":
-        consumer(c, Queues, QueuesC)
+        consumer(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC)
         
 #method for different producers
-def producer(c, Queues, port): 
+def producer(c, port, QueuesP, ChannelsP, ChannelsC):
 
     while True: 
 
@@ -34,34 +34,39 @@ def producer(c, Queues, port):
             if Id == 'q':
 
                 if command == "create":
-                    response = Logic.queueCreate(Queues, port)
+                    response = Logic.queueCreate(QueuesP, port)
                 
                 elif command == "list":
-                    response = Logic.queueList(Queues)
+                    response = Logic.queueList(QueuesP)
                 
                 elif command == "delete":
-                    response = Logic.queueDelete(Queues, port)
+                    response = Logic.queueDelete(QueuesP, port)
                 
                 elif command == "message":
-                    response = Logic.queueMessage(Queues, port, message)
+                    response = Logic.queueMessage(QueuesP, port, message)
                 
                 c.sendall(response.encode("utf-8"))
                 
             if Id == 'c':
 
                 if command == "create":
-                    print("aun no implementado")
+                    response = Logic.channelCreate(ChannelsP, port)
                 
                 elif command == "list":
-                    print("aun no implementado")
+                    response = Logic.channelList(ChannelsP)
                 
                 elif command == "delete":
-                    print("aun no implementado")
+                    response = Logic.channelDelete(ChannelsP, port)
+
+                elif command == "message":
+                    response = Logic.channelMessage(ChannelsP, ChannelsC, port, message)
+                
+                c.sendall(response.encode("utf-8"))
 
     # connection closed 
     c.close() 
 
-def consumer(c, dic_p, dic_c):
+def consumer(c, port, dic_p, dic_c, ChannelsP, ChannelsC):
     response = lc.get_token() # Get token
     c.sendall(response.encode("utf-8")) # Send token
 
@@ -106,10 +111,18 @@ def Main():
     
     s.listen(5) 
     print("socket is listening") 
-    # a forever loop to connect with clients
 
-    Queues = {}
+    #diccionario para identificar las colas de cada productor
+    QueuesP = {}
+
+    #diccionario para que cada consumidor sepa a que cola esta suscrita
     QueuesC = {}
+
+    #diccionario para identificar los canales de cada productor
+    ChannelsP = {}
+
+    #diccionario para identificar los canales de cada productor
+    ChannelsC = {}
 
     while True: 
 
@@ -119,7 +132,8 @@ def Main():
         identification = str(addr[0])+":"+str(addr[1])
         # Start a new thread
         try:
-            start_new_thread(threaded, (c, Queues, QueuesC, identification))
+            #hilo para que el servidor siempre permanezca escuchando las conexiones 
+            start_new_thread(threaded, (c, identification, QueuesP, QueuesC, ChannelsP, ChannelsC))
         except:
             continue
     s.close() 
