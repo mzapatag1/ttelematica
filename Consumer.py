@@ -13,29 +13,39 @@ def Main():
     
     print('connected')
     s.send(bytes("2", "utf-8"))
-    data = s.recv(1024)
-    token = str(data.decode("utf-8"))
-    print(token)
 
     while True: 
-        message = str(input() + ' ' + token).strip()
+        message = str(input()).strip()
         commands = message.split(' ')
 
         if commands[0] == 'exit':
             break
 
-        elif len(commands) == 4:
-            if commands[0] == "CONNECT":
-                if commands[1] == 'QUEUE':
-                    s.send(bytes(message, "utf-8")) 
-                    data = s.recv(1024) 
-                    print('Received from the server :',str(data.decode("utf-8")))
-
-        elif len(commands) == 2:
-            if commands[0] == "PULL":
+        elif commands[0] == "CONNECT":
+            if commands[1] == 'QUEUE':
                 s.send(bytes(message, "utf-8")) 
                 data = s.recv(1024) 
                 print('Received from the server :',str(data.decode("utf-8")))
+            
+            elif commands[1] == 'CHANNEL':
+                s.send(bytes(message, "utf-8")) 
+                data = s.recv(1024) 
+                print('Received from the server :',str(data.decode("utf-8")))
+            
+
+        elif commands[0] == "PULL":
+            if commands[1] == 'QUEUE':
+                s.send(bytes(message, "utf-8")) 
+                data = s.recv(1024) 
+                print('Received from the server :',str(data.decode("utf-8")))
+
+            elif commands[1] == 'CHANNEL':
+                s.send(bytes(message, "utf-8")) 
+                data = s.recv(1024) 
+                print('Received from the server :',str(data.decode("utf-8")))
+        
+        else:
+            print('Invalid Command')
 
     # close the connection 
     s.close() 

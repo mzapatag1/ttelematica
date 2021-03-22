@@ -68,10 +68,44 @@ def Main():
                     print("comando incorrecto")
 
             #commands about files
-            elif Id == 'f':
-                print("no implementado")
+            elif Id == 'c':
+                #create
+                if command == 'create':
+                    s.send(bytes(Id+" "+command, "utf-8"))
+
+                    response = s.recv(1024)
+                    response = str(response.decode("utf-8"))
+                    print(response)
+
+                #list
+                elif command == 'list':
+                    s.send(bytes(Id+" "+command, "utf-8"))
+
+                    response = s.recv(1024)
+                    response = str(response.decode("utf-8"))
+                    print(response)
+
+                #delete
+                elif command == 'delete':
+                    s.send(bytes(Id+" "+command, "utf-8"))
+
+                    response = s.recv(1024)
+                    response = str(response.decode("utf-8"))
+                    print(response)
+                
+                elif command == 'message':
+                    message = input("Ingresa el mensaje: ")
+                    s.send(bytes(Id+" "+command+" "+message, "utf-8"))
+
+                    response = s.recv(1024)
+                    response = str(response.decode("utf-8"))
+                    print(response)
+                else:
+                    print("comando incorrecto")
+
             else:
                 print('there are only 2 options q or c')
+
         else:
             print('Invalid Command')
 

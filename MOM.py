@@ -66,9 +66,7 @@ def producer(c, port, QueuesP, ChannelsP, ChannelsC):
     # connection closed 
     c.close() 
 
-def consumer(c, port, dic_p, dic_c, ChannelsP, ChannelsC):
-    response = lc.get_token() # Get token
-    c.sendall(response.encode("utf-8")) # Send token
+def consumer(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC):
 
     while True: 
         data = c.recv(1024) # command received from client
@@ -77,24 +75,29 @@ def consumer(c, port, dic_p, dic_c, ChannelsP, ChannelsC):
             break
 
         else:
-            command, mode, idq, token = lc.unpack(str(data.decode("utf-8")))
+            command, mode, idq = lc.unpack(str(data.decode("utf-8")))
             if command == 'CONNECT':
                 if mode == 'QUEUE':
-                    response = lc.c_queue(dic_p, dic_c, idq, token)
+                    response = lc.c_queue(QueuesP, QueuesC, idq, port)
+                
+                elif mode == 'CHANNEL':
+                    response = lc.c_channel(ChannelsC, ChannelsP, idq, port)
 
                 c.sendall(response.encode("utf-8"))
 
             elif command == 'PULL':
-                response = lc.p_queue(dic_c, token)
+                if mode == 'QUEUE':
+                    response = lc.p_queue(QueuesC, port)
+
+                elif mode == 'CHANNEL':
+                    response = lc.p_channel(ChannelsC, port)
+
                 c.sendall(response.encode("utf-8"))
                 
             else:
                 response = 'Invalid Command'
                 c.sendall(response.encode("utf-8"))
             
-
-
-
     # connection closed 
     c.close() 
 
@@ -113,15 +116,19 @@ def Main():
     print("socket is listening") 
 
     #diccionario para identificar las colas de cada productor
+    #la clave es la direccion ip del productor el valor es una cola(objeto cola)
     QueuesP = {}
 
     #diccionario para que cada consumidor sepa a que cola esta suscrita
+    #la clave es la direccion ip del consumidor el valor es una cola(objeto cola)
     QueuesC = {}
 
     #diccionario para identificar los canales de cada productor
+    #la clave la dirrecion ip del productor, su valor es un arreglo que contiene los id de los consumidores
     ChannelsP = {}
 
-    #diccionario para identificar los canales de cada productor
+    #diccionario que relaciona un consumidor con su cola para recibo de mensajes por parte de un canal
+    #la clave es la direccion ip del consumidor el valor es una cola(objeto cola)
     ChannelsC = {}
 
     while True: 
