@@ -6,8 +6,10 @@ import os
 import time
 
 def Main(): 
-    host = 'localhost' # local host IP '127.0.0.1'
-    port = 8000 
+    #host = '100.24.162.39' # local host IP '127.0.0.1'
+    #port = 8080
+    host = "localhost"  
+    port = 8000
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
     s.connect((host,port))  # connect to server on local computer
     print('Connected')

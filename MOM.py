@@ -48,7 +48,7 @@ def threaded(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC):
                 c.send(response.encode("utf-8"))
         except:
             response = "ERROR! Cannot find, try again"
-            print(response)
+            print(response, sys.exc_info())
             c.send(response.encode("utf-8"))
 
 
@@ -64,7 +64,7 @@ def producer(c, port, QueuesP, ChannelsP, ChannelsC):
             #print_lock.release() # lock released on exit 
             break
         else:
-            Id, command, message = Logic.unpack(str(data.decode("utf-8")))
+            Id, command, message, indice = Logic.unpack(str(data.decode("utf-8")))
             if Id == 'q':
 
                 if command == "create":
@@ -74,10 +74,10 @@ def producer(c, port, QueuesP, ChannelsP, ChannelsC):
                     response = Logic.queueList(QueuesP)
                 
                 elif command == "delete":
-                    response = Logic.queueDelete(QueuesP, port)
+                    response = Logic.queueDelete(QueuesP, port, indice)
                 
                 elif command == "message":
-                    response = Logic.queueMessage(QueuesP, port, message)
+                    response = Logic.queueMessage(QueuesP, port, message, indice)
                 
                 c.sendall(response.encode("utf-8"))
                 
@@ -90,10 +90,10 @@ def producer(c, port, QueuesP, ChannelsP, ChannelsC):
                     response = Logic.channelList(ChannelsP)
                 
                 elif command == "delete":
-                    response = Logic.channelDelete(ChannelsP, port)
+                    response = Logic.channelDelete(ChannelsP, port, indice)
 
                 elif command == "message":
-                    response = Logic.channelMessage(ChannelsP, ChannelsC, port, message)
+                    response = Logic.channelMessage(ChannelsP, ChannelsC, port, message, indice)
                 
                 c.sendall(response.encode("utf-8"))
 
@@ -137,8 +137,10 @@ def consumer(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC):
 
 
 def Main(): 
+    #host = "0.0.0.0" 
     host = "localhost" 
     #server port
+    #port = 8080
     port = 8000
     #socket created
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 

@@ -9,13 +9,16 @@ import time
 #   queue
 #       q create
 #       q list
-#       q delete
-#       q message
+#       q delete [# de la cola]
+#       q message [# de la cola]
 
 def Main(): 
-    host = 'localhost' # local host IP '127.0.0.1'
+    #host = '100.24.162.39' # local host IP '127.0.0.1'
 
-    port = 8000 # Define the port on which you want to connect 
+    #port = 8080 # Define the port on which you want to connect 
+
+    host = "localhost"  
+    port = 8000
 
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
 
@@ -54,7 +57,7 @@ def Main():
         elif len(commands)>=2:
             Id = commands[0].strip()
             command = commands[1].strip()
-            #command about buckets
+            
             if Id == 'q':
                 #create
                 if command == 'create':
@@ -74,7 +77,7 @@ def Main():
 
                 #delete
                 elif command == 'delete':
-                    s.send(bytes(Id+" "+command, "utf-8"))
+                    s.send(bytes(Id+" "+command+" "+commands[2], "utf-8"))
 
                     response = s.recv(1024)
                     response = str(response.decode("utf-8"))
@@ -82,7 +85,7 @@ def Main():
                 
                 elif command == 'message':
                     message = input("Ingresa el mensaje: ")
-                    s.send(bytes(Id+" "+command+" "+message, "utf-8"))
+                    s.send(bytes(Id+" "+command+" "+message+" "+commands[2], "utf-8"))
 
                     response = s.recv(1024)
                     response = str(response.decode("utf-8"))
@@ -90,7 +93,7 @@ def Main():
                 else:
                     print("comando incorrecto")
 
-            #commands about files
+            
             elif Id == 'c':
                 #create
                 if command == 'create':
@@ -110,7 +113,7 @@ def Main():
 
                 #delete
                 elif command == 'delete':
-                    s.send(bytes(Id+" "+command, "utf-8"))
+                    s.send(bytes(Id+" "+command+" "+commands[2], "utf-8"))
 
                     response = s.recv(1024)
                     response = str(response.decode("utf-8"))
@@ -118,7 +121,7 @@ def Main():
                 
                 elif command == 'message':
                     message = input("Ingresa el mensaje: ")
-                    s.send(bytes(Id+" "+command+" "+message, "utf-8"))
+                    s.send(bytes(Id+" "+command+" "+message+" "+commands[2], "utf-8"))
 
                     response = s.recv(1024)
                     response = str(response.decode("utf-8"))
