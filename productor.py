@@ -20,8 +20,31 @@ def Main():
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
 
     s.connect((host,port))  # connect to server on local computer 
+    print('Connected')
 
-    s.send(bytes("1", "utf-8"))
+# Authentication
+    while True: 
+        print('Please enter your username and password')            
+        login = str(input()).strip()
+        s.send(bytes(login, "utf-8"))
+
+        data = login.split(' ')
+        user = data[0]
+        password = data[1]
+
+            # Receive MOM's reply and decode
+        resp = s.recv(1024)
+        resp = str(resp.decode("utf-8"))
+
+        # Manejar errores
+        if resp == user:
+            print('Welcome',resp)
+            s.send(bytes("1", "utf-8"))
+            break
+        else:
+            print(resp)
+
+
     while True: 
         # command to send to server 
         message = str(input()).strip()

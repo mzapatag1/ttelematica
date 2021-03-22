@@ -7,12 +7,36 @@ import time
 
 def Main(): 
     host = 'localhost' # local host IP '127.0.0.1'
-    port = 8000 # Define the port on which you want to connect 
+    port = 8000 
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
     s.connect((host,port))  # connect to server on local computer
-    
-    print('connected')
-    s.send(bytes("2", "utf-8"))
+    print('Connected')
+
+    # Authentication
+    while True: 
+        print('Please enter your username and password')
+        login = str(input()).strip()
+        s.send(bytes(login, "utf-8"))
+
+        data = login.split(' ')
+        user = data[0]
+        password = data[1]
+
+        # Receive MOM's reply and decode
+        resp = s.recv(1024)
+        resp = str(resp.decode("utf-8"))
+
+    # Manejar errores
+        if resp == user:
+            print('Welcome',resp)
+            s.send(bytes("2", "utf-8"))
+            break
+        else:
+            print(resp)
+
+        
+
+
 
     while True: 
         message = str(input()).strip()
@@ -45,7 +69,7 @@ def Main():
                 print('Received from the server :',str(data.decode("utf-8")))
         
         else:
-            print('Invalid Command')
+            print('Invalid command')
 
     # close the connection 
     s.close() 

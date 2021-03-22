@@ -9,15 +9,49 @@ import threading
 import sys
 import os
 
+import json
+
 print_lock = threading.Lock() # thread function 
 
 def threaded(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC):
-    data = c.recv(1024)
-    Id = str(data.decode("utf-8"))
-    if Id == "1":
-        producer(c, port, QueuesP, ChannelsP, ChannelsC)
-    if Id == "2":
-        consumer(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC)
+    
+    while True:
+        login = c.recv(1024) # 
+        data = str(login.decode("utf-8"))
+        info = data.split(' ')
+        user = info[0]
+        password = info[1]
+        #user, password = Logic.unpack(str(login.decode("utf-8")))
+
+        try:
+            f = open("auth.json")
+            auth = json.load(f)
+            auth = auth[0]
+            #autenticación
+            if auth[user] == password:
+                print(user, ' has logged in' )
+                response = user
+                c.send(response.encode("utf-8"))
+
+                # identify user type: consumer or producer
+                data = c.recv(1024)
+                Id = str(data.decode("utf-8"))
+
+                if Id == "1":
+                    producer(c, user, QueuesP, ChannelsP, ChannelsC)
+                    break
+                if Id == "2":
+                    consumer(c, user, QueuesP, QueuesC, ChannelsP, ChannelsC)
+                    break
+            else:
+                response = "Failed login"
+                c.send(response.encode("utf-8"))
+        except:
+            response = "ERROR! Cannot find, try again"
+            print(response)
+            c.send(response.encode("utf-8"))
+
+
         
 #method for different producers
 def producer(c, port, QueuesP, ChannelsP, ChannelsC):
