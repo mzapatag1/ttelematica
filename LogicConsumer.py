@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import time
+from queue import Queue
 
 def pack(packet_id, message):
     return chr(packet_id) + message
@@ -10,22 +11,48 @@ def pack(packet_id, message):
 def unpack(data):
     info = data.split(' ')
     if info[0] == 'CONNECT':
-        return info[0], info[1], info[2], info[3]
+        return info[0], info[1], info[2]
+
     elif info[0] == 'PULL':
-        return info[0], None, None, info[1]
+        return info[0], info[1], None
+
     else:
-        return 'Error', None, None, None
+        return 'Error', None, None
 
 
-def get_token():
-    return 'a'
+def c_queue(QueuesP, QueuesC, idq, port):
+    try:
+        q = QueuesP.get(idq)
+        QueuesC[port] = q
+        return 'Conected with queue'
+    except:
+        return 'Invalid id queue'
 
-def c_queue(dic_p, dic_c, idq, token):
-    q = dic_p.get(idq)
-    dic_c[token] = q
-    return 'Conected with queue'
+def p_queue(QueuesC, port):
+    try:
+        q = QueuesC[port]
+        return q.get()
+    except:
+        return 'Empty queue'
 
-def p_queue(dic_c, token):
-    q = dic_c[token]
-    return q.get()
+def c_channel(ChannelsC, ChannelsP, idq, port):
+    try:
+        if port in ChannelsC:   
+            ChannelsP[idq].append(port)
+        else:
+            q = Queue(maxsize = 0)
+            ChannelsC[port] = q
+            ChannelsP[idq].append(port)
+
+        return 'Conected with channel'
+
+    except:
+        return 'Invalid id channel'
+
+def p_channel(ChannelsC, port):
+    try:
+        q = ChannelsC[port]
+        return q.get()
+    except:
+        return 'Empty channel'
 
