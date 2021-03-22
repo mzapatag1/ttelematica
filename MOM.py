@@ -109,13 +109,16 @@ def consumer(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC):
             break
 
         else:
-            command, mode, idq = lc.unpack(str(data.decode("utf-8")))
+            command, mode, idq, idp = lc.unpack(str(data.decode("utf-8")))
             if command == 'CONNECT':
                 if mode == 'QUEUE':
-                    response = lc.c_queue(QueuesP, QueuesC, idq, port)
+                    response = lc.c_queue(QueuesP, QueuesC, idq, idp, port)
                 
                 elif mode == 'CHANNEL':
-                    response = lc.c_channel(ChannelsC, ChannelsP, idq, port)
+                    response = lc.c_channel(ChannelsC, ChannelsP, idq, idp, port)
+                
+                else:
+                    response = 'Invalid command: Choose queue or channel to connect'
 
                 c.sendall(response.encode("utf-8"))
 
@@ -126,10 +129,25 @@ def consumer(c, port, QueuesP, QueuesC, ChannelsP, ChannelsC):
                 elif mode == 'CHANNEL':
                     response = lc.p_channel(ChannelsC, port)
 
+                else:
+                    response = 'Invalid command: Choose queue or channel to pull'
+
                 c.sendall(response.encode("utf-8"))
+
+            elif command == 'LIST':
+                if mode == 'QUEUE':
+                    response = Logic.queueList(QueuesP)
+
+                elif mode == 'CHANNEL':
+                    response = Logic.channelList(ChannelsP)
+
+                else:
+                    response = 'Invalid command: Choose queue or channel to list'
                 
+                c.sendall(response.encode("utf-8"))
+
             else:
-                response = 'Invalid Command'
+                response = 'Invalid Command: Command no recognize'
                 c.sendall(response.encode("utf-8"))
             
     # connection closed 
