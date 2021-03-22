@@ -36,10 +36,6 @@ def Main():
         else:
             print(resp)
 
-        
-
-
-
     while True: 
         message = str(input()).strip()
         commands = message.split(' ')
@@ -47,34 +43,62 @@ def Main():
         if commands[0] == 'exit':
             break
 
-        elif commands[0] == "CONNECT":
-            if commands[1] == 'QUEUE':
-                s.send(bytes(message, "utf-8")) 
-                data = s.recv(1024) 
-                print('Received from the server :',str(data.decode("utf-8")))
-            
-            elif commands[1] == 'CHANNEL':
-                s.send(bytes(message, "utf-8")) 
-                data = s.recv(1024) 
-                print('Received from the server :',str(data.decode("utf-8")))
-            
+        elif len(commands) == 4:
+            if commands[0] == "CONNECT":
+                if commands[1] == 'QUEUE':
+                    s.send(bytes(message, "utf-8")) 
+                    data = s.recv(1024) 
+                    print('Received from the server :',str(data.decode("utf-8")))
 
-        elif commands[0] == "PULL":
-            if commands[1] == 'QUEUE':
-                s.send(bytes(message, "utf-8")) 
-                data = s.recv(1024) 
-                print('Received from the server :',str(data.decode("utf-8")))
+                elif commands[1] == 'CHANNEL':
+                    s.send(bytes(message, "utf-8")) 
+                    data = s.recv(1024) 
+                    print('Received from the server :',str(data.decode("utf-8")))
 
-            elif commands[1] == 'CHANNEL':
-                s.send(bytes(message, "utf-8")) 
-                data = s.recv(1024) 
-                print('Received from the server :',str(data.decode("utf-8")))
-        
+                else:
+                    print('Invalid command: choose queue or channel to connect')
+
+            else:
+                    print('Invalid command: command not recognize')
+
+
+        elif len(commands) == 2:
+            if commands[0] == "PULL":
+                if commands[1] == 'QUEUE':
+                    s.send(bytes(message, "utf-8")) 
+                    data = s.recv(1024) 
+                    print('Received from the server :',str(data.decode("utf-8")))
+
+                elif commands[1] == 'CHANNEL':
+                    s.send(bytes(message, "utf-8")) 
+                    data = s.recv(1024) 
+                    print('Received from the server :',str(data.decode("utf-8")))
+
+                else:
+                    print('Invalid command: choose queue or channel to connect')
+            
+            elif commands[0] == "LIST":
+                if commands[1] == 'QUEUE':
+                    s.send(bytes(message, "utf-8")) 
+                    data = s.recv(1024) 
+                    print('Received from the server :',str(data.decode("utf-8")))
+
+                elif commands[1] == 'CHANNEL':
+                    s.send(bytes(message, "utf-8")) 
+                    data = s.recv(1024) 
+                    print('Received from the server :',str(data.decode("utf-8")))
+
+                else:
+                    print('Invalid command: choose queue or channel to list')
+
+            else:
+                print('Invalid command: command no recognize')
         else:
-            print('Invalid command')
+            print("Invalid command: command no recognize")
 
     # close the connection 
     s.close() 
+    print('Disconnected')
 
 if __name__ == '__main__': 
     Main() 
