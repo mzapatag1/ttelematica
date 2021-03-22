@@ -39,15 +39,21 @@ def queueList(QueuesP):
     return listQ
 
 def queueDelete(QueuesP, port):
-    QueuesP.pop(port)
-    print("se eliminó la cola "+str(port))
-    return "QE"
+    try:
+        QueuesP.pop(port)
+        print("se eliminó la cola "+str(port))
+        return "QD"
+    except:
+        return "QE"
 
 def queueMessage(QueuesP, port, message):
-    QueuesP[port].put(message)
-    print("se añadió el mensaje a la cola "+str(port))
-    print("mensaje",message)
-    return "MA"
+    try:
+        QueuesP[port].put(message)
+        print("se añadió el mensaje a la cola "+str(port))
+        print("mensaje",message)
+        return "MA"
+    except:
+        return "ME"
 
 #Channels
 
@@ -63,15 +69,20 @@ def channelList(ChannelsP):
     return listC
 
 def channelDelete(ChannelsP, port):
-    ChannelsP.pop(port)
-    print("se eliminó el canal "+str(port))
-    return "CE"
+    try:
+        ChannelsP.pop(port)
+        print("se eliminó el canal "+str(port))
+        return "CD"
+    except:
+        return "CE"
 
 def channelMessage(ChannelsP, ChannelsC, port, message):
-    
-    for i in ChannelsP[port]:
-        ChannelsC[i].put(message)
+    try:
+        for i in ChannelsP[port]:
+            ChannelsC[i].put(message)
 
-    print("se añadió el mensaje a el canal "+str(port))
-    print("mensaje",message)
-    return "MA"
+        print("se añadió el mensaje a el canal "+str(port))
+        print("mensaje",message)
+        return "MA"
+    except:
+        return "ME"
