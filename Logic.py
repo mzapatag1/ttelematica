@@ -17,8 +17,8 @@ def unpack(data):
     info = data.split(' ')
     if len(info)==2:    
         return info[0], info[1], 0, 0
-    elif "message" in data:
-        index = data.index("message")
+    elif "MESSAGE" in data:
+        index = data.index("MESSAGE")
         return info[0], info[1], data[index+8:-1].strip(), info[-1]
     return info[0], info[1], 0, info[2]
 
@@ -101,6 +101,7 @@ def channelDelete(ChannelsP, port, indice):
         return "CE"
 
 def channelMessage(ChannelsP, ChannelsC, port, message, indice):
+    print(message)
     try:
         indiceI = int(indice)
         for i in ChannelsP[port][indiceI]:
@@ -110,4 +111,5 @@ def channelMessage(ChannelsP, ChannelsC, port, message, indice):
         print("mensaje",message)
         return "MA"
     except:
+        print(sys.exc_info())
         return "ME"
