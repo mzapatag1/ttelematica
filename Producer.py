@@ -53,14 +53,15 @@ def Main():
         message = str(input()).strip()
         commands = message.split(' ')
         if message == 'exit':
-                break
+            print("Bye!")
+            break
         elif len(commands)>=2:
             Id = commands[0].strip()
             command = commands[1].strip()
             
-            if Id == 'q':
+            if Id == 'QUEUE':
                 #create
-                if command == 'create':
+                if command == 'CREATE':
                     s.send(bytes(Id+" "+command, "utf-8"))
 
                     response = s.recv(1024)
@@ -68,7 +69,7 @@ def Main():
                     print(response)
 
                 #list
-                elif command == 'list':
+                elif command == 'LIST':
                     s.send(bytes(Id+" "+command, "utf-8"))
 
                     response = s.recv(1024)
@@ -76,14 +77,14 @@ def Main():
                     print(response)
 
                 #delete
-                elif command == 'delete':
+                elif command == 'DELETE':
                     s.send(bytes(Id+" "+command+" "+commands[2], "utf-8"))
 
                     response = s.recv(1024)
                     response = str(response.decode("utf-8"))
                     print(response)
                 
-                elif command == 'message':
+                elif command == 'MESSAGE':
                     message = input("Ingresa el mensaje: ")
                     s.send(bytes(Id+" "+command+" "+message+" "+commands[2], "utf-8"))
 
@@ -94,9 +95,9 @@ def Main():
                     print("comando incorrecto")
 
             
-            elif Id == 'c':
+            elif Id == 'CHANNEL':
                 #create
-                if command == 'create':
+                if command == 'CREATE':
                     s.send(bytes(Id+" "+command, "utf-8"))
 
                     response = s.recv(1024)
@@ -104,7 +105,7 @@ def Main():
                     print(response)
 
                 #list
-                elif command == 'list':
+                elif command == 'LIST':
                     s.send(bytes(Id+" "+command, "utf-8"))
 
                     response = s.recv(1024)
@@ -112,14 +113,14 @@ def Main():
                     print(response)
 
                 #delete
-                elif command == 'delete':
+                elif command == 'DELETE':
                     s.send(bytes(Id+" "+command+" "+commands[2], "utf-8"))
 
                     response = s.recv(1024)
                     response = str(response.decode("utf-8"))
                     print(response)
                 
-                elif command == 'message':
+                elif command == 'MESSAGE':
                     message = input("Ingresa el mensaje: ")
                     s.send(bytes(Id+" "+command+" "+message+" "+commands[2], "utf-8"))
 
@@ -127,10 +128,10 @@ def Main():
                     response = str(response.decode("utf-8"))
                     print(response)
                 else:
-                    print("comando incorrecto")
+                    print("Wrong command")
 
             else:
-                print('there are only 2 options q or c')
+                print('there are only 2 options QUEUE or CHANNEL')
 
         else:
             print('Invalid Command')

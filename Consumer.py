@@ -41,6 +41,7 @@ def Main():
         commands = message.split(' ')
 
         if commands[0] == 'exit':
+            print("Bye!")
             break
 
         elif len(commands) == 4:
@@ -59,7 +60,7 @@ def Main():
                     print('Invalid command: choose queue or channel to connect')
 
             else:
-                    print('Invalid command: command not recognize')
+                    print('Invalid command: command not recognized')
 
 
         elif len(commands) == 2:

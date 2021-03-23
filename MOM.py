@@ -65,34 +65,34 @@ def producer(c, port, QueuesP, ChannelsP, ChannelsC):
             break
         else:
             Id, command, message, indice = Logic.unpack(str(data.decode("utf-8")))
-            if Id == 'q':
+            if Id == 'QUEUE':
 
-                if command == "create":
+                if command == "CREATE":
                     response = Logic.queueCreate(QueuesP, port)
                 
-                elif command == "list":
+                elif command == "LIST":
                     response = Logic.queueList(QueuesP)
                 
-                elif command == "delete":
+                elif command == "DELETE":
                     response = Logic.queueDelete(QueuesP, port, indice)
                 
-                elif command == "message":
+                elif command == "MESSAGE":
                     response = Logic.queueMessage(QueuesP, port, message, indice)
                 
                 c.sendall(response.encode("utf-8"))
                 
-            if Id == 'c':
+            if Id == 'CHANNEL':
 
-                if command == "create":
+                if command == "CREATE":
                     response = Logic.channelCreate(ChannelsP, port)
                 
-                elif command == "list":
+                elif command == "LIST":
                     response = Logic.channelList(ChannelsP)
                 
-                elif command == "delete":
+                elif command == "DELETE":
                     response = Logic.channelDelete(ChannelsP, port, indice)
 
-                elif command == "message":
+                elif command == "MESSAGE":
                     response = Logic.channelMessage(ChannelsP, ChannelsC, port, message, indice)
                 
                 c.sendall(response.encode("utf-8"))
